@@ -16,11 +16,19 @@ FourGameWindow::FourGameWindow(QWidget *parent)
 
     //Checkbox
     connect(ui->timeCheckBox,&QCheckBox::clicked,[=](bool isClicked){ ui->timeEdit->setEnabled(isClicked); });
+
     //PlayStart
     connect(ui->playBtn,SIGNAL(clicked()),this,SLOT(startNewGame()));
-    //Colors
-    connect(ui->p1ColorBtn,&QPushButton::clicked,this,[=](){ setPlayerColor(ui->p1ColorBtn);});
-    connect(ui->p2ColorBtn,&QPushButton::clicked,this,[=](){ setPlayerColor(ui->p2ColorBtn);});
+
+    //PlayerName
+    connect(ui->p1Edit,&QLineEdit::textChanged,this,[=](){ ui->playBtn->setEnabled(playReady());});
+    connect(ui->p2Edit,&QLineEdit::textChanged,this,[=](){ ui->playBtn->setEnabled(playReady());});
+
+    //PlayerColors
+    connect(ui->p1ColorBtn,&QPushButton::clicked,this,[=]()
+           {setPlayerColor(ui->p1ColorBtn); ui->playBtn->setEnabled(playReady());});
+    connect(ui->p2ColorBtn,&QPushButton::clicked,this,[=]()
+           {setPlayerColor(ui->p2ColorBtn); ui->playBtn->setEnabled(playReady());});
 }
 
 FourGameWindow::~FourGameWindow()
@@ -36,12 +44,10 @@ void FourGameWindow::startNewGame()
     buttons.clear();
 
     //Player Name
-    // TODO: check for same name
     QString p1Name = (ui->p1Edit->text() != "") ? ui->p1Edit->text() : "Player 1";
     QString p2Name = (ui->p2Edit->text() != "") ? ui->p2Edit->text() : "Player 2";
 
     //Player Color
-    // TODO: check for same color
     QColor p1Color = ui->p1ColorBtn->palette().window().color();
     QColor p2Color = ui->p2ColorBtn->palette().window().color();
 
@@ -187,4 +193,14 @@ void FourGameWindow::incrementButton(int row, int col)
 {
     if(game->isValidField(row,col))
         buttons[row][col]->setText(QString::number(game->addPoint(row,col)));
+}
+
+bool FourGameWindow::playReady()
+{
+    // Check if players' data conflicts
+    QString p1Name = (ui->p1Edit->text() != "") ? ui->p1Edit->text() : "Player 1";
+    QString p2Name = (ui->p2Edit->text() != "") ? ui->p2Edit->text() : "Player 2";
+
+    return      p1Name != p2Name
+            &&  ui->p1ColorBtn->palette().window().color() != ui->p2ColorBtn->palette().window().color();
 }
