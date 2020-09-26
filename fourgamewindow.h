@@ -43,7 +43,7 @@ private:
 //METHODS
     void initGameField();
     void incrementButton(int row,int col);
-    bool playReady();
+    bool playReady() const;
 
 };
 #endif // FOURGAMEWINDOW_H

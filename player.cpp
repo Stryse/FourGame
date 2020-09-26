@@ -5,8 +5,8 @@ Player::Player(QObject *parent, const QColor& color,
     : QObject(parent)
     , playerName(pName)
     , startTime(time)
-    , gameTime(time)
     , color(color)
+    , gameTime(time)
     , score(0)
 {
 }

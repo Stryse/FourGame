@@ -195,7 +195,7 @@ void FourGameWindow::incrementButton(int row, int col)
         buttons[row][col]->setText(QString::number(game->addPoint(row,col)));
 }
 
-bool FourGameWindow::playReady()
+bool FourGameWindow::playReady() const
 {
     // Check if players' data conflicts
     QString p1Name = (ui->p1Edit->text() != "") ? ui->p1Edit->text() : "Player 1";

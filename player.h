@@ -13,6 +13,7 @@ public:
     explicit Player(QObject *parent, const QColor& color,
                     const QTime& time, const QString& pName);
 
+// PUBLIC METHODS
     //Name
     const QString& getPlayerName() const;
     //Time
@@ -25,14 +26,16 @@ public:
     //Color
     const QColor& getColor() const;
 
+// SIGNALS
 signals:
     void timeEnded();
 
 private:
+// FIELDS
     const QString playerName;
     const QTime startTime;
+    const QColor color;
     QTime gameTime;
-    QColor color;
     int score;
 };
 

@@ -55,7 +55,7 @@ int GameLogic::addPoint(int row, int col)
     return fields[row][col];
 }
 
-bool GameLogic::isValidField(int row, int col)
+bool GameLogic::isValidField(int row, int col) const
 {
     return row >= 0 && row < rowCount
             && col >= 0 && col < colCount;

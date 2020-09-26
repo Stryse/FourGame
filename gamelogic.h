@@ -1,29 +1,27 @@
 #ifndef GAMELOGIC_H
 #define GAMELOGIC_H
 
-#define PLAYERCOUNT 2
-
 #include <QObject>
 #include <QTimer>
 #include <QVector>
 
 #include "player.h"
 
-
 class GameLogic : public QObject
 {
     Q_OBJECT
 public:
+
     //CTOR
     explicit GameLogic(QObject *parent, const QTime& time,
                        const QVector<Player*>& players ,int rowCount = 5,int colCount = 5);
     ~GameLogic();
 
 public: signals:
-    void timeChanged();
+    //SIGNALS
     void scored(int row,int col);
-    void endGame();
     void playerChanged();
+    void endGame();
 
 public:
     // Public Fields
@@ -35,18 +33,18 @@ public:
 
     // GameField methods
     int getFieldValue(int row, int col) const;
-    int addPoint(int row, int col);
-    bool isValidField(int row, int col);
-    void checkWinCond();
+    int addPoint(int row, int col); // emits scored();
+    bool isValidField(int row, int col) const;
+    void checkWinCond(); // emits endGame();
 
     // Player methods
     Player* getPlayer(int n) const;
     Player* getActivePlayer() const;
-    void changeActivePlayer();
+    void changeActivePlayer(); // emits playerChanged();
 
 private:
 
-    // Private fields
+    // Private Fields
     QTimer gameTimer;
     QVector<Player*> players;
     Player* activePlayer;
