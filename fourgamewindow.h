@@ -22,14 +22,14 @@ public:
     ~FourGameWindow();    
 
 //SIGNALS
-public: signals:
-    void endGame();
 
 //SLOTS
 private slots:
     void startNewGame();
     void updateTime();
+    void setPlayerColor(QPushButton* btn);
     void on_scored(int row, int col);
+    void on_playerChanged();
     void gameButtonClick(int row,int col);
     void gameEnded();
 
@@ -37,7 +37,7 @@ private slots:
 private:
     Ui::FourGameWindow* ui;
     GameLogic* game;
-
+    QVector<Player*> players;
     QVector<QVector<QPushButton*>> buttons;
 
 //METHODS

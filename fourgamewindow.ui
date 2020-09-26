@@ -98,7 +98,7 @@
             <string notr="true">border: none;</string>
            </property>
            <property name="digitCount">
-            <number>1</number>
+            <number>2</number>
            </property>
           </widget>
          </item>
@@ -160,7 +160,7 @@
             <string notr="true">border: none;</string>
            </property>
            <property name="digitCount">
-            <number>1</number>
+            <number>2</number>
            </property>
           </widget>
          </item>
@@ -358,15 +358,15 @@ background-color: rgb(177, 177, 177);</string>
              <property name="maximumTime">
               <time>
                <hour>0</hour>
-               <minute>10</minute>
-               <second>0</second>
+               <minute>1</minute>
+               <second>2</second>
               </time>
              </property>
              <property name="minimumTime">
               <time>
                <hour>0</hour>
                <minute>0</minute>
-               <second>30</second>
+               <second>2</second>
               </time>
              </property>
              <property name="displayFormat">

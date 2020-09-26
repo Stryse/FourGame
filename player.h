@@ -17,9 +17,11 @@ public:
     //Time
     const QTime& getGameTime() const;
     const QTime& subTime();
+    void resetTime();
     //Score
     int getScore() const;
     int addScore();
+    void resetScore();
     //Color
     int getColor(int n) const;
 
@@ -28,10 +30,10 @@ signals:
 
 private:
     const QString playerName;
+    const QTime startTime;
+    QTime gameTime;
     int color[3];
     int score;
-    QTime gameTime;
-
 };
 
 #endif // PLAYER_H

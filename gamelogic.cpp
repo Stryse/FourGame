@@ -10,9 +10,7 @@ GameLogic::GameLogic(QObject *parent, const QTime& time,
 {
     //Setup Players
     for(auto& player : players)
-    {
-        connect(player,&Player::timeEnded,[=](){ changeActivePlayer(); });
-    }
+        connect(player,&Player::timeEnded,[=](){ changeActivePlayer();});
 
     //Setup fields
     for(auto& field : fields)
@@ -32,7 +30,6 @@ GameLogic::GameLogic(QObject *parent, const QTime& time,
 
 GameLogic::~GameLogic()
 {
-    for(int i = 0; i < PLAYERCOUNT; ++i) delete players[i];
 }
 
 int GameLogic::getFieldValue(int row, int col) const
@@ -42,13 +39,30 @@ int GameLogic::getFieldValue(int row, int col) const
 
 int GameLogic::addPoint(int row, int col)
 {
-    int value = ++fields[row][col];
-    if(value == GameLogic::maxFieldValue)
+    ++fields[row][col];
+
+    if(fields[row][col] == GameLogic::maxFieldValue)
     {
         getActivePlayer()->addScore();
         emit scored(row,col);
     }
     return fields[row][col];
+}
+
+bool GameLogic::isValidField(int row, int col)
+{
+    return row >= 0 && row < rowCount
+            && col >= 0 && col < colCount;
+}
+
+void GameLogic::checkWinCond()
+{
+    int scoreSum = 0;
+    for(auto& p : players)
+        scoreSum += p->getScore();
+
+    if(scoreSum == rowCount * colCount)
+        emit endGame();
 }
 
 Player *GameLogic::getPlayer(int n) const
@@ -63,6 +77,8 @@ Player *GameLogic::getActivePlayer() const
 
 void GameLogic::changeActivePlayer()
 {
+    activePlayer->resetTime();
     activePlayer = players[(activePInd+1)%players.size()];
     activePInd = (activePInd+1)%players.size();
+    emit playerChanged();
 }

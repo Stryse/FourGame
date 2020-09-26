@@ -22,6 +22,8 @@ public:
 public: signals:
     void timeChanged();
     void scored(int row,int col);
+    void endGame();
+    void playerChanged();
 
 public:
     // Public Fields
@@ -34,15 +36,13 @@ public:
     // GameField methods
     int getFieldValue(int row, int col) const;
     int addPoint(int row, int col);
+    bool isValidField(int row, int col);
+    void checkWinCond();
 
     // Player methods
     Player* getPlayer(int n) const;
     Player* getActivePlayer() const;
     void changeActivePlayer();
-
-
-signals:
-    void endGame();
 
 private:
 
