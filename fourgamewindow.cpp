@@ -27,6 +27,7 @@ FourGameWindow::~FourGameWindow()
 {
     delete ui;
     delete game;
+    for(auto& p : players) delete p;
 }
 
 void FourGameWindow::startNewGame()
