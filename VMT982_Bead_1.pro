@@ -9,11 +9,15 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    gamelogic.cpp \
     main.cpp \
-    fourgamewindow.cpp
+    fourgamewindow.cpp \
+    player.cpp
 
 HEADERS += \
-    fourgamewindow.h
+    fourgamewindow.h \
+    gamelogic.h \
+    player.h
 
 FORMS += \
     fourgamewindow.ui

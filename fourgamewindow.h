@@ -2,11 +2,11 @@
 #define FOURGAMEWINDOW_H
 
 #include <QWidget>
-#include <QTimer>
-#include <QTime>
 #include <QVector>
 #include <QPushButton>
 
+#include "gamelogic.h"
+#include "player.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class FourGameWindow; }
@@ -17,6 +17,7 @@ class FourGameWindow : public QWidget
     Q_OBJECT
 
 public:
+//CTOR
     FourGameWindow(QWidget* parent = nullptr);
     ~FourGameWindow();    
 
@@ -28,17 +29,16 @@ public: signals:
 private slots:
     void startNewGame();
     void updateTime();
+    void on_scored(int row, int col);
     void gameButtonClick(int row,int col);
+    void gameEnded();
 
 //FIELDS
 private:
     Ui::FourGameWindow* ui;
-    QTimer gameTimer;
-    QTime gameTime;
+    GameLogic* game;
 
-    static const int rowCount = 5;
-    static const int colCount = 5;
-    QPushButton* buttons[rowCount][colCount];
+    QVector<QVector<QPushButton*>> buttons;
 
 //METHODS
     void initGameField();

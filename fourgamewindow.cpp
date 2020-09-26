@@ -1,48 +1,61 @@
 #include "fourgamewindow.h"
 #include "ui_fourgamewindow.h"
 
+#include <QMessageBox>
+#include <QStyle>
+#include <QString>
+
 FourGameWindow::FourGameWindow(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::FourGameWindow)
+    , game(nullptr)
 {
     ui->setupUi(this);
     ui->gameTimerDisplay->setVisible(false);
 
     connect(ui->timeCheckBox,&QCheckBox::clicked,[=](bool isClicked){ ui->timeEdit->setEnabled(isClicked); });
     connect(ui->playBtn,SIGNAL(clicked()),this,SLOT(startNewGame()));
-    connect(&gameTimer,SIGNAL(timeout()),this,SLOT(updateTime()));
-
 }
 
 FourGameWindow::~FourGameWindow()
 {
     delete ui;
+    delete game;
 }
 
 void FourGameWindow::startNewGame()
 {
+
+    int p1c[3] = {255,0,0};
+    int p2c[3] = {0,0,255};
+
+    QString p1Name = (ui->p1Edit->text() != "") ? ui->p1Edit->text() : "Player 1";
+    QString p2Name = (ui->p2Edit->text() != "") ? ui->p2Edit->text() : "Player 2";
+
+    QVector<Player*> players {
+        new Player(game,p1c,ui->timeEdit->time(),p1Name),
+        new Player(game,p2c,ui->timeEdit->time(),p2Name)
+    };
+
+    game = new GameLogic(this,ui->timeEdit->time(),players);
+    connect(game,SIGNAL(endGame()),this,SLOT(gameEnded()));
+
     //Hide Menu
     ui->menuVLayout->setVisible(false);
 
     //Set Player labels
-    if(ui->p1Edit->text() != "") ui->p1statusLabel->setText(ui->p1Edit->text());
-    else                         ui->p1statusLabel->setText("Player 1");
-
-    if(ui->p2Edit->text() != "") ui->p2statusLabel->setText(ui->p2Edit->text());
-    else                         ui->p2statusLabel->setText("Player 2");
+    ui->p1statusLabel->setText(game->getPlayer(0)->getPlayerName());
+    ui->p2statusLabel->setText(game->getPlayer(1)->getPlayerName());
 
     //Reset scores
-    ui->p1scoreDisplay->display(0);
-    ui->p2scoreDisplay->display(0);
+    ui->p1scoreDisplay->display(game->getPlayer(0)->getScore());
+    ui->p2scoreDisplay->display(game->getPlayer(1)->getScore());
 
     //Enable timer if selected
     if(ui->timeCheckBox->isChecked() && ui->timeEdit->time() != QTime(0,0,0,0))
     {
-        gameTime = ui->timeEdit->time();
-
-        ui->gameTimerDisplay->display(gameTime.toString());
+        ui->gameTimerDisplay->display(game->getActivePlayer()->getGameTime().toString());
         ui->gameTimerDisplay->setVisible(true);
-        gameTimer.start(1000);
     }
     else
         ui->gameTimerDisplay->setVisible(false);
@@ -53,28 +66,47 @@ void FourGameWindow::startNewGame()
 
 void FourGameWindow::updateTime()
 {
-    gameTime = gameTime.addSecs(-1);
-    ui->gameTimerDisplay->display(gameTime.toString());
-    if(gameTime == QTime(0,0,0,0))
-    {
-        gameTimer.stop();
-        emit endGame();
-    }
+    ui->gameTimerDisplay->display(game->getActivePlayer()->subTime().toString());
+}
+
+void FourGameWindow::on_scored(int row, int col)
+{
+    buttons[row][col]->setEnabled(false);
+
+    QString r = QString::number(game->getActivePlayer()->getColor(0));
+    QString g = QString::number(game->getActivePlayer()->getColor(1));
+    QString b = QString::number(game->getActivePlayer()->getColor(2));
+    buttons[row][col]->setStyleSheet(QString("background-color: rgb(%0,%1,%2);").arg(r,g,b));
+
+    ui->p1scoreDisplay->display(game->getPlayer(0)->getScore());
+    ui->p2scoreDisplay->display(game->getPlayer(1)->getScore());
 }
 
 void FourGameWindow::gameButtonClick(int row, int col)
 {
     incrementButton(row,col);
+    game->changeActivePlayer();
+}
+
+void FourGameWindow::gameEnded()
+{
+    ui->gameTimerDisplay->setVisible(false);
+    QMessageBox msgBox;
+    msgBox.setText("Game Over");
+    msgBox.setWindowTitle("Game Over!");
+    msgBox.exec();
 }
 
 void FourGameWindow::initGameField()
 {
-    for(int i= 0; i < rowCount; ++i)
+    buttons.resize(game->rowCount);
+    for(int i= 0; i < game->rowCount; ++i)
     {
-       for(int j = 0;j < colCount; ++j)
+       buttons[i].resize(game->colCount);
+       for(int j = 0; j < game->colCount; ++j)
        {
            QPushButton* gameBtn = new QPushButton(ui->gridWidget);
-           gameBtn->setText(QString::number(0));
+           gameBtn->setText(QString::number(game->getFieldValue(i,j)));
            connect(gameBtn,&QPushButton::clicked,[=](){ gameButtonClick(i,j); });
 
            ui->gridLayout->addWidget(gameBtn,i,j,Qt::AlignCenter);
@@ -85,12 +117,5 @@ void FourGameWindow::initGameField()
 
 void FourGameWindow::incrementButton(int row, int col)
 {
-    int value = buttons[row][col]->text().toInt();
-    if(value < 3)
-        buttons[row][col]->setText(QString::number(value+1));
-    else
-    {
-        buttons[row][col]->setText(QString::number(value+1));
-        buttons[row][col]->setEnabled(false);
-    }
+    buttons[row][col]->setText(QString::number(game->addPoint(row,col)));
 }

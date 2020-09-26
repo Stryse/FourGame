@@ -362,6 +362,13 @@ background-color: rgb(177, 177, 177);</string>
                <second>0</second>
               </time>
              </property>
+             <property name="minimumTime">
+              <time>
+               <hour>0</hour>
+               <minute>0</minute>
+               <second>30</second>
+              </time>
+             </property>
              <property name="displayFormat">
               <string>m:ss</string>
              </property>
@@ -369,7 +376,7 @@ background-color: rgb(177, 177, 177);</string>
               <time>
                <hour>0</hour>
                <minute>0</minute>
-               <second>0</second>
+               <second>30</second>
               </time>
              </property>
             </widget>
