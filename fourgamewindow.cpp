@@ -35,12 +35,13 @@ void FourGameWindow::startNewGame()
     buttons.clear();
 
     //Player Name
+    // TODO: check for same name
     QString p1Name = (ui->p1Edit->text() != "") ? ui->p1Edit->text() : "Player 1";
     QString p2Name = (ui->p2Edit->text() != "") ? ui->p2Edit->text() : "Player 2";
 
     //Player Color
-    QColor p1Color = ui->p1ColorBtn->palette().background().color();
-    QColor p2Color = ui->p2ColorBtn->palette().background().color();
+    QColor p1Color = ui->p1ColorBtn->palette().window().color();
+    QColor p2Color = ui->p2ColorBtn->palette().window().color();
     int p1c[] = {p1Color.red(),p1Color.green(),p1Color.blue()};
     int p2c[] = {p2Color.red(),p2Color.green(),p2Color.blue()};
 
@@ -49,7 +50,9 @@ void FourGameWindow::startNewGame()
     players.push_back(new Player(this,p2c,ui->timeEdit->time(),p2Name));
 
     //Setup Game Logic
-    game = new GameLogic(this,ui->timeEdit->time(),players);
+    QTime gameTime = (ui->timeCheckBox->isChecked()) ? ui->timeEdit->time() : QTime(0,0,0,0);
+
+    game = new GameLogic(this,gameTime,players);
     connect(game,SIGNAL(endGame()),this,SLOT(gameEnded()));
     connect(game,SIGNAL(playerChanged()),this,SLOT(on_playerChanged()));
 
@@ -64,7 +67,7 @@ void FourGameWindow::updateTime()
 
 void FourGameWindow::setPlayerColor(QPushButton* btn)
 {
-    QColor color = QColorDialog::getColor(btn->palette().background().color(),this,"Pick a player color");
+    QColor color = QColorDialog::getColor(btn->palette().window().color(),this,"Pick a player color");
     btn->setStyleSheet(QString("color: #fff;background-color: %0;").arg(color.name()));
 }
 
@@ -104,8 +107,9 @@ void FourGameWindow::gameButtonClick(int row, int col)
     for(int i = row-1; i <= row+1; ++i)
         for(int j = col-1; j <= col+1; ++j)
             incrementButton(i,j);
-    game->checkWinCond();
+
     game->changeActivePlayer();
+    game->checkWinCond();
 }
 
 void FourGameWindow::gameEnded()
@@ -135,7 +139,6 @@ void FourGameWindow::gameEnded()
 
     //Start over
     startNewGame();
-    game->changeActivePlayer();
 }
 
 void FourGameWindow::initGameField()
@@ -147,13 +150,14 @@ void FourGameWindow::initGameField()
     ui->p1statusLabel->setText(game->getPlayer(0)->getPlayerName());
     ui->p1statusLabel->setStyleSheet("color: rgb(252,238,40);");
     ui->p2statusLabel->setText(game->getPlayer(1)->getPlayerName());
+    ui->p2statusLabel->setStyleSheet("color: rgb(211,211,211);");
 
     //Reset scores
     ui->p1scoreDisplay->display(game->getPlayer(0)->getScore());
     ui->p2scoreDisplay->display(game->getPlayer(1)->getScore());
 
     //Enable timer if selected
-    if(ui->timeCheckBox->isChecked() && ui->timeEdit->time() != QTime(0,0,0,0))
+    if(ui->timeCheckBox->isChecked())
     {
         ui->gameTimerDisplay->display(game->getActivePlayer()->getGameTime().toString());
         ui->gameTimerDisplay->setVisible(true);

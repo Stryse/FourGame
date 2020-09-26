@@ -355,11 +355,21 @@ background-color: rgb(177, 177, 177);</string>
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="maximumDateTime">
+              <datetime>
+               <hour>0</hour>
+               <minute>0</minute>
+               <second>45</second>
+               <year>2000</year>
+               <month>1</month>
+               <day>1</day>
+              </datetime>
+             </property>
              <property name="maximumTime">
               <time>
                <hour>0</hour>
-               <minute>1</minute>
-               <second>2</second>
+               <minute>0</minute>
+               <second>45</second>
               </time>
              </property>
              <property name="minimumTime">
