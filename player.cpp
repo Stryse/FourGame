@@ -1,14 +1,14 @@
 #include "player.h"
 
-Player::Player(QObject *parent, int clr[],
+Player::Player(QObject *parent, const QColor& color,
                const QTime& time, const QString& pName)
     : QObject(parent)
     , playerName(pName)
     , startTime(time)
     , gameTime(time)
+    , color(color)
     , score(0)
 {
-    for(int i = 0; i < 3; ++i) color[i] = clr[i];
 }
 
 const QTime& Player::getGameTime() const
@@ -48,8 +48,7 @@ int Player::addScore()
     return ++score;
 }
 
-int Player::getColor(int n) const
+const QColor &Player::getColor() const
 {
-    Q_ASSERT(n <= 3 && n >= 0);
-    return color[n];
+    return color;
 }

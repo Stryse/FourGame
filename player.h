@@ -4,12 +4,13 @@
 #include <QObject>
 #include <QString>
 #include <QTime>
+#include <QColor>
 
 class Player : public QObject
 {
     Q_OBJECT
 public:
-    explicit Player(QObject *parent, int color[],
+    explicit Player(QObject *parent, const QColor& color,
                     const QTime& time, const QString& pName);
 
     //Name
@@ -22,7 +23,7 @@ public:
     int getScore() const;
     int addScore();
     //Color
-    int getColor(int n) const;
+    const QColor& getColor() const;
 
 signals:
     void timeEnded();
@@ -31,7 +32,7 @@ private:
     const QString playerName;
     const QTime startTime;
     QTime gameTime;
-    int color[3];
+    QColor color;
     int score;
 };
 

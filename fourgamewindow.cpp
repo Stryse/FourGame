@@ -40,14 +40,13 @@ void FourGameWindow::startNewGame()
     QString p2Name = (ui->p2Edit->text() != "") ? ui->p2Edit->text() : "Player 2";
 
     //Player Color
+    // TODO: check for same color
     QColor p1Color = ui->p1ColorBtn->palette().window().color();
     QColor p2Color = ui->p2ColorBtn->palette().window().color();
-    int p1c[] = {p1Color.red(),p1Color.green(),p1Color.blue()};
-    int p2c[] = {p2Color.red(),p2Color.green(),p2Color.blue()};
 
     //Populate Player
-    players.push_back(new Player(this,p1c,ui->timeEdit->time(),p1Name));
-    players.push_back(new Player(this,p2c,ui->timeEdit->time(),p2Name));
+    players.push_back(new Player(this,p1Color,ui->timeEdit->time(),p1Name));
+    players.push_back(new Player(this,p2Color,ui->timeEdit->time(),p2Name));
 
     //Setup Game Logic
     QTime gameTime = (ui->timeCheckBox->isChecked()) ? ui->timeEdit->time() : QTime(0,0,0,0);
@@ -77,10 +76,8 @@ void FourGameWindow::on_scored(int row, int col)
     buttons[row][col]->setEnabled(false);
 
     //Colorize
-    QString r = QString::number(game->getActivePlayer()->getColor(0));
-    QString g = QString::number(game->getActivePlayer()->getColor(1));
-    QString b = QString::number(game->getActivePlayer()->getColor(2));
-    buttons[row][col]->setStyleSheet(QString("color: #fff;background-color: rgb(%0,%1,%2);").arg(r,g,b));
+    buttons[row][col]->setStyleSheet(QString("color: #fff;background-color: %0;")
+                                     .arg(game->getActivePlayer()->getColor().name()));
 
     //Update UI
     ui->p1scoreDisplay->display(game->getPlayer(0)->getScore());
