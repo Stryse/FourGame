@@ -77,7 +77,7 @@ void FourGameWindow::on_scored(int row, int col)
     buttons[row][col]->setEnabled(false);
 
     //Colorize
-    buttons[row][col]->setStyleSheet(QString("color: #fff;background-color: %0;")
+    buttons[row][col]->setStyleSheet(QString("font-size: 30px;color: #fff;background-color: %0;")
                                      .arg(game->getActivePlayer()->getColor().name()));
 
     //Update UI
@@ -164,6 +164,7 @@ void FourGameWindow::initGameField()
         ui->gameTimerDisplay->setVisible(false);
 
     //Populate ButtonGrid
+    ui->gridLayout->setMargin(0);
     buttons.resize(game->rowCount);
     for(int i= 0; i < game->rowCount; ++i)
     {
@@ -171,9 +172,12 @@ void FourGameWindow::initGameField()
        for(int j = 0; j < game->colCount; ++j)
        {
            QPushButton* gameBtn = new QPushButton(ui->gridWidget);
-           buttons[i][j] = gameBtn;
            gameBtn->setText(QString::number(game->getFieldValue(i,j)));
-           ui->gridLayout->addWidget(gameBtn,i,j,Qt::AlignCenter);
+           gameBtn->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+           gameBtn->setStyleSheet("font-size: 20px;");
+
+           ui->gridLayout->addWidget(gameBtn,i,j);
+           buttons[i][j] = gameBtn;
            connect(gameBtn,&QPushButton::clicked,[=](){ gameButtonClick(i,j); });
        }
     }
