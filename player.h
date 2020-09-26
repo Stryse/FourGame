@@ -21,7 +21,6 @@ public:
     //Score
     int getScore() const;
     int addScore();
-    void resetScore();
     //Color
     int getColor(int n) const;
 

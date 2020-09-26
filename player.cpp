@@ -48,11 +48,6 @@ int Player::addScore()
     return ++score;
 }
 
-void Player::resetScore()
-{
-    score = 0;
-}
-
 int Player::getColor(int n) const
 {
     Q_ASSERT(n <= 3 && n >= 0);
