@@ -1,10 +1,10 @@
 #include "fourgamewindow.h"
 #include "ui_fourgamewindow.h"
 
-#include <QMessageBox>
 #include <QString>
 #include <QColor>
 #include <QColorDialog>
+#include <QMessageBox>
 
 FourGameWindow::FourGameWindow(QWidget *parent)
     : QWidget(parent)
@@ -48,10 +48,12 @@ void FourGameWindow::startNewGame()
     players.push_back(new Player(this,p1c,ui->timeEdit->time(),p1Name));
     players.push_back(new Player(this,p2c,ui->timeEdit->time(),p2Name));
 
+    //Setup Game Logic
     game = new GameLogic(this,ui->timeEdit->time(),players);
     connect(game,SIGNAL(endGame()),this,SLOT(gameEnded()));
     connect(game,SIGNAL(playerChanged()),this,SLOT(on_playerChanged()));
 
+    //Setup Game Environment
     initGameField();
 }
 
@@ -68,19 +70,23 @@ void FourGameWindow::setPlayerColor(QPushButton* btn)
 
 void FourGameWindow::on_scored(int row, int col)
 {
+    //Disable
     buttons[row][col]->setEnabled(false);
 
+    //Colorize
     QString r = QString::number(game->getActivePlayer()->getColor(0));
     QString g = QString::number(game->getActivePlayer()->getColor(1));
     QString b = QString::number(game->getActivePlayer()->getColor(2));
     buttons[row][col]->setStyleSheet(QString("color: #fff;background-color: rgb(%0,%1,%2);").arg(r,g,b));
 
+    //Update UI
     ui->p1scoreDisplay->display(game->getPlayer(0)->getScore());
     ui->p2scoreDisplay->display(game->getPlayer(1)->getScore());
 }
 
 void FourGameWindow::on_playerChanged()
 {
+    //Switch active player highlighting
     if(game->getActivePlayer()->getPlayerName() == ui->p1statusLabel->text())
     {
         ui->p1statusLabel->setStyleSheet("color: rgb(252,238,40);");

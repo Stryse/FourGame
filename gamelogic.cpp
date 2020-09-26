@@ -39,8 +39,14 @@ int GameLogic::getFieldValue(int row, int col) const
 
 int GameLogic::addPoint(int row, int col)
 {
+    //SKIP IF REACHED
+    if(fields[row][col] == GameLogic::maxFieldValue)
+        return fields[row][col];
+
+    //Increment field
     ++fields[row][col];
 
+    //Check if scored
     if(fields[row][col] == GameLogic::maxFieldValue)
     {
         getActivePlayer()->addScore();
