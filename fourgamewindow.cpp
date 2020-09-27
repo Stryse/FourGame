@@ -108,10 +108,11 @@ void FourGameWindow::on_playerChanged()
 
 void FourGameWindow::gameButtonClick(int row, int col)
 {
-    for(int i = row-1; i <= row+1; ++i)
-        for(int j = col-1; j <= col+1; ++j)
-            incrementButton(i,j);
-
+    incrementButton(row,col);
+    incrementButton(row,col-1);
+    incrementButton(row,col+1);
+    incrementButton(row-1,col);
+    incrementButton(row+1,col);
     game->changeActivePlayer();
     game->checkWinCond();
 }
